@@ -4,6 +4,10 @@
 # Last Modified: 21 Jan, 2017
 
 import chess
+import datetime
+import random
+import string
+
 from Player import *
 
 class Game:
@@ -11,6 +15,7 @@ class Game:
 		self.board = chess.Board()
 		self.p1 = p1
 		self.p2 = p2
+		self.key = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4)) + str(datetime.datetime.now().time().hour) + str(datetime.datetime.now().time().minute)
 
 	def updateBoard(self, m):
 		if not self.isValidMove(m):
@@ -37,4 +42,26 @@ class Game:
 			return -1
 
 	def getBoard(self):
-		return self.board
+		out = str(self.board)
+
+		chess_replace = {u'P':u'♙',
+				 u'R':u'♖',
+                                 u'N':u'♘',
+                                 u'B':u'♗',
+                                 u'Q':u'♕',
+                                 u'K':u'♔',
+                                 u'p':u'♟',
+                                 u'r':u'♜',
+                                 u'n':u'♞',
+                                 u'b':u'♝',
+                                 u'q':u'♝',
+                                 u'k':u'♝',
+				 u'.':u'…' }
+
+		for key, value in chess_replace.iteritems():
+			out = out.replace(key, value)
+
+		return out
+
+	def getKey(self):
+		return self.key
