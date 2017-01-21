@@ -10,7 +10,7 @@ class Player:
 		self.is_turn = is_white
 
 	def toggleTurn(self):
-		is_turn = !is_turn
+		self.is_turn = not self.is_turn
 
 	def getName(self):
 		return self.t_name
