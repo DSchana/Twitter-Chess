@@ -20,17 +20,17 @@
 import tweepy
 
 #Authorizing information to control account
-consumer_key = "kdf50lNpawRUFy7K7NqEptWd2"
-consumer_secret = "qOlsMFW5PdyP26ut6U9segE7ikWp0oifE36l8fvQKg713xBMGb"
+consumer_key = 	"Hw1ZVEq1fnCNg6Ru1DT0vteFn"
+consumer_secret = "8fAShyc2IRusJ1Qv0KbX75TiVzYpv85vjEohR7aHKj2X6ZL6cV"
 
-access_token = "822095735411896325-dyVt5FAJ9PZ8lhTMZhuibO2YVpDKyHg"
-access_token_secret = "5dvBevNb1MxpJw52dpgkfeto4cVqa48ihKv7UnJeoEe9j"
+access_token = "822614698692591617-bt7zcInR2qu8AyIO7ZeyKlWEQyQJC1O"
+access_token_secret = "ghdZ9yTND1pDncpMa3Xd1B50iucoXGKPgd0FrZC2KPztU"
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 auth.secure = True #Stay safe and secure
 api = tweepy.API(auth) #authorize the tweepy API
-thisBot = api.get_user(screen_name = "@CurryKing622")
+thisBot = api.get_user(screen_name = "@RealTwitChess")
 
 #
 # Objective: Creates an object that manages input and output from twitter
@@ -57,7 +57,6 @@ class Input:
 					if (x < len(textparts)-1): #prevents error that arises with an incomplete call of the twitter bot to start a game
 						if string == "gamestart" and textparts[x+1][:1] == "@": #find games
 							otheruser = api.get_user(screen_name = textparts[2][1:]) #drop the @ sign (although it might not matter)
-							print otheruser.id
 							self.games.append((tweet.user.id,otheruser.id))
 					elif (len(textparts[x]) == 4): #find moves
 						newMove = Move(tweet.user.id,string)
@@ -68,7 +67,7 @@ class Input:
 
 			except tweepy.TweepError as e: 
 				print(e.reason)
-				sleep(10)
+				sleep(5)
 				continue
 			except StopIteration: #stop iteration when last tweet is reached
 				break
@@ -102,7 +101,6 @@ class Input:
 		elif ID1 and ID2: #Two people are mentioned
 			user = api.get_user(ID1)  
 			user2 = api.get_user(ID2)
-			print user2.screen_name
 			try:
 				api.update_status("@" + user.screen_name + " @" + user2.screen_name + " " + s)
 			except tweepy.TweepError as e:
