@@ -25,7 +25,7 @@ class Game:
 		self.p1.toggleTurn()
 		self.p2.toggleTurn()
 
-		return self.board
+		return self.getBoard()
 
 	def isValidMove(self, m):
 		try:
@@ -33,7 +33,15 @@ class Game:
 		except:
 			return False
 
-	def getPlayer(self, p_id):
+	def getPlayer(self, p_id, num = False):
+		if num:
+			if p_id == 1:
+				return self.p1
+			elif p_id == 2:
+				return self.p2
+			else:
+				return -1
+
 		if self.p1.getName() == p_id:
 			return self.p1
 		elif self.p2.getName() == p_id:
