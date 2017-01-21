@@ -4,6 +4,10 @@
 # Last Modified: 21 Jan, 2017
 
 import chess
+import datetime
+import random
+import string
+
 from Player import *
 
 class Game:
@@ -11,6 +15,7 @@ class Game:
 		self.board = chess.Board()
 		self.p1 = p1
 		self.p2 = p2
+		self.key = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4)) + str(datetime.datetime.now().time().hour) + str(datetime.datetime.now().time().minute)
 
 	def updateBoard(self, m):
 		if not self.isValidMove(m):
@@ -37,4 +42,8 @@ class Game:
 			return -1
 
 	def getBoard(self):
+		out = self.board
 		return self.board
+
+	def getKey(self):
+		return self.key
