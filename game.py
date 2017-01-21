@@ -23,7 +23,10 @@ class Game:
 		return self.board
 
 	def isValidMove(self, m):
-		return chess.Move.from_uci(m) in self.board.legal_moves
+		try:
+			return chess.Move.from_uci(m) in self.board.legal_moves
+		except:
+			return False
 
 	def getBoard(self):
 		return self.board
