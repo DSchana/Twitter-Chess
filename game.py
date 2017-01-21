@@ -42,8 +42,26 @@ class Game:
 			return -1
 
 	def getBoard(self):
-		out = self.board
-		return self.board
+		out = str(self.board)
+
+		chess_replace = {u'P':u'♙',
+				 u'R':u'♖',
+                                 u'N':u'♘',
+                                 u'B':u'♗',
+                                 u'Q':u'♕',
+                                 u'K':u'♔',
+                                 u'p':u'♟',
+                                 u'r':u'♜',
+                                 u'n':u'♞',
+                                 u'b':u'♝',
+                                 u'q':u'♝',
+                                 u'k':u'♝',
+				 u'.':u'…' }
+
+		for key, value in chess_replace.iteritems():
+			out = out.replace(key, value)
+
+		return out
 
 	def getKey(self):
 		return self.key
