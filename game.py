@@ -1,7 +1,7 @@
 # Title:	 game.py
 # Author:     	 Dilpreet S. Chana
 # Description: 	 A clean chess wrapper for Python-Chess
-# Last Modified: 20 Jan, 2017
+# Last Modified: 21 Jan, 2017
 
 import chess
 from Player import *
@@ -27,6 +27,14 @@ class Game:
 			return chess.Move.from_uci(m) in self.board.legal_moves
 		except:
 			return False
+
+	def getPlayer(self, p_id):
+		if self.p1.getName() == p_id:
+			return self.p1
+		elif self.p2.getName() == p_id:
+			return self.p2
+		else:
+			return -1
 
 	def getBoard(self):
 		return self.board

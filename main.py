@@ -1,5 +1,6 @@
 from Game import *
 from Player import *
+from Input import *
 from random import randint
 
 t_input = Input()
@@ -19,9 +20,13 @@ while True:
 
 	for m in moves:
 		for g in range(len(games)):
-			if (games[g].getPlayer1().getName() == m[0] or games[g].getPlayer2().getName() == m[0]):  # Check if either player is one of the tweeters
-				b = games[g].updateBoard(m[1])  # update found game with new move
-				#TODO: Make tweet with new board
-				break;
+			p = games[g].getPlayer(m[0])
+			if (p != -1):  # Check if either player is one of the tweeters
+				if p.isTurn():
+					b = games[g].updateBoard(m[1])  # update found game with new move
+					#TODO: Make tweet with new board
+				else:
+					#TODO: Make tweet with "Wait you're turn" content
+				break
 			elif g == len(games) - 1:  # Found no game with this user
 				#TODO: Make tweet with "No game started" content
