@@ -121,5 +121,3 @@ moveslist = []
 gameslist = []
 test = Input(moveslist, gameslist)
 test.update()
-
-test.sendMessage("Lowkey I really hate chess", 735128411874689024,822095735411896325)
