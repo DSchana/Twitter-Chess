@@ -38,9 +38,9 @@ thisBot = api.get_user(screen_name = "@RealTwitChess")
 # Output: Can post statuses or supply other objects with the games and moves list it stores
 #
 class Input:
-	def __init__ (self,moves,games):
-		self.moves = moves
-		self.games = games
+	def __init__ (self):
+		self.moves = []
+		self.games = []
 
 	#
 	# Objective: Scans twitter feeds for mentions of the twitterchess bot and records relevant actions
@@ -73,13 +73,9 @@ class Input:
 				break
 
 	def getMoves(self): #returns the list of moves in active games
-		if not self.moves:
-			return false
 		return self.moves
 
 	def getGames(self): #returns the list of games waiting to be made
-		if not self.games:
-			return false
 		return self.games
 
 	#
@@ -117,7 +113,7 @@ class Move: #object contains the ID of the player and the move they are to make
 	def getMove(self):
 		return self.move
 
-moveslist = []
-gameslist = []
-test = Input(moveslist, gameslist)
-test.update()
+#moveslist = []
+#gameslist = []
+#test = Input(moveslist, gameslist)
+#test.update()
