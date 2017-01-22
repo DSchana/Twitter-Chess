@@ -52,10 +52,12 @@ class Input:
 	# Output: Stores new games and planned moves 
 	#
 	def update(self):
+		print("Dicks This")
 		myStreamListener = MyStreamListener()
 		myStream = tweepy.Stream(auth = api.auth, listener = myStreamListener)
 		myStream.filter(track = ["@realtwitchess"])
-		print(getStat())
+		print("Dicks")
+
 		#print api.rate_limit_status()
 		# for tweet in tweepy.Cursor(api.search, q = '@realtwitchess ', count = 200, result_type = "recent",lang = ' ').pages():
 		# 	print api.rate_limit_status()
@@ -115,18 +117,25 @@ class Input:
 
 def sendStat(s):
 	print("shits happening yo")
-	stat = s
-	print(stat)
+	
+	text_file = open("Output.txt", "a")
+	text_file.write("%s\n" % s)
+	text_file.close()
 
 def getStat():
-	return stat
+	f = open("Output.txt", "w+")
+	stats = f.read().split("\n")
+	f.write("")
+	print("BLESS: " + str(len(stats)))
+	f.close()
+
+	return stats
 
 #override tweepy.StreamListener to add logic to on_status
 class MyStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
     	sendStat(status.text)
-        print(status.text)
 
     def on_error(self, status_code):
     	if status_code == 420:
@@ -156,3 +165,7 @@ test = Input(moveslist, gameslist)
 #test.update()
 while True:
 	test.update()
+	print("Dicks")
+	x = getStat()
+	for i in x:
+		print(i)
