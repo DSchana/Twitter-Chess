@@ -97,23 +97,27 @@ class Input:
 # Input: None
 # Output: Stores new games and planned moves 
 #
-def sendMessage(s,ID1 = None, ID2 = None): #writes a status, mentioning 1, 2 or no other users
+def sendMessage(s, ID1 = None, ID2 = None): #writes a status, mentioning 1, 2 or no other users
 	if not ID1 and not ID2: #No person to be mentioned
 		api.update_status(s)
 
 	elif ID1 and not ID2: #Only one person is mentioned
 		user = api.get_user(ID1)   
 		try:
-			api.update_status("@" + user.screen_name + " " + s)
+			api.update_status("@" + user.screen_name + "\n" + s)
 		except tweepy.TweepError as e:
+			print("Damn: " + str(e.message))
 			pass
 
 	elif ID1 and ID2: #Two people are mentioned
 		user = api.get_user(ID1)  
 		user2 = api.get_user(ID2)
 		try:
-			api.update_status("@" + user.screen_name + " @" + user2.screen_name + " " + s)
+			print("@" + user.screen_name + "@" + user2.screen_name + "\n" + s)
+			api.update_status("@" + user.screen_name + "@" + user2.screen_name + " " + s)
 		except tweepy.TweepError as e:
+			print("Damn")
+			print(e.message)
 			pass
 
 def sendStat(s):
@@ -157,15 +161,21 @@ class MyStreamListener(tweepy.StreamListener):
 		# if not, create a Move object called 'm' with the id and shit of the tweeter
 
 		if new_game:
+			print("New game starting")
 			p1_white = randint(1, 10)
 			p1 = Player(user.id, p1_white % 2)
 			p2 = Player(otheruser.id, not (p1_white % 2))
 
 			self.games.append(Game(p1, p2))
 
+			sendMessage(str(self.games[len(self.games) - 1].getBoard()), p1.getName())
+			sendMessage(str(self.games[len(self.games) - 1].getBoard()), p2.getName())
+			#sendMessage("@dschana2 Test", p1.getName(), p2.getName())
+
 		else:
+			print("Moving")
 			for g in range(len(games)):
-				p = games[g].getPlayer(m.getID())
+				p = self.games[g].getPlayer(m.getID())
 				if p != -1:  # Check if either player is one of the tweeters
 					if p.isTurn():
 						b = games[g].updateBoard(m.getMove())  # update found game with new move
@@ -175,7 +185,8 @@ class MyStreamListener(tweepy.StreamListener):
 							sendMessage(b, games[g].getPlayer(1, True), games[g].getPlayer(2, True))
 					else:
 						sendMessage(b, p)
-					break
+
+		new_game = False
 
 		print(status.text)
 
