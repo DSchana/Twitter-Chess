@@ -33,7 +33,7 @@ class Game:
 		except:
 			return False
 
-	def getPlayer(self, p_id, num = False):
+	def getPlayer(self, p_id, num):
 		if num:
 			if p_id == 1:
 				return self.p1

@@ -149,33 +149,44 @@ class MyStreamListener(tweepy.StreamListener):
 					otheruser = api.get_user(screen_name = textparts[2][1:]) #drop the @ sign (although it might not matter)
 					print otheruser.id
 				elif (len(textparts[1]) == 4): #find moves
-				 		m = Move(tweet.user.id,string)
+				 		m = Move(status.user.id,string)
 
 		if new_game:
 			print("New game starting")
-			p1_white = randint(1, 10)
-			p1 = Player(user.id, p1_white % 2)
-			p2 = Player(otheruser.id, not (p1_white % 2))
+			p1 = Player(user.id, True)
+			p2 = Player(otheruser.id, False)
 
 			self.games.append(Game(p1, p2))
 
-			sendMessage(str(self.games[len(self.games) - 1].getBoard()), p1.getName())
-			sendMessage(str(self.games[len(self.games) - 1].getBoard()), p2.getName())
-			#sendMessage("@dschana2 Test", p1.getName(), p2.getName())
+			sendDM(str(self.games[len(self.games) - 1].getBoard()), p1.getName())
+			sendDM(str(self.games[len(self.games) - 1].getBoard()), p2.getName())
+			#sendMessage(str(self.games[len(self.games) - 1].getBoard()), p1.getName())
+			#sendMessage(str(self.games[len(self.games) - 1].getBoard()), p2.getName())
+			##sendMessage("@dschana2 Test", p1.getName(), p2.getName())
 
 		else:
 			print("Moving")
-			for g in range(len(games)):
+			for g in range(len(self.games)):
+				b = self.games[g].updateBoard(m.getMove())
+				if b == "Invalid move":
+					sendMessage(b, self.games[g].getPlayer(1, True).getName(), self.games[g].getPlayer(2, True).getName())
+				else:
+					sendDM(b, self.games[g].getPlayer(1, True).getName())
+					sendDM(b, self.games[g].getPlayer(2, True).getName())
+			'''
+			for g in range(len(self.games)):
 				p = self.games[g].getPlayer(m.getID())
 				if p != -1:  # Check if either player is one of the tweeters
 					if p.isTurn():
-						b = games[g].updateBoard(m.getMove())  # update found game with new move
+						b = self.games[g].updateBoard(m.getMove())  # update found game with new move
 						if b == "Invalid move":
-							sendMessage(b, p)
+							sendDM(b, p.getName())
 						else:
-							sendMessage(b, games[g].getPlayer(1, True), games[g].getPlayer(2, True))
+							sendDM(b, self.games[g].getPlayer(1, True).getName())
+							sendDM(b, self.games[g].getPlayer(2, True).getName())
 					else:
-						sendMessage(b, p)
+						sendDM(b, p.getName())
+			'''
 
 		new_game = False
 
@@ -201,7 +212,7 @@ class Move: #object contains the ID of the player and the move they are to make
 moveslist = []
 gameslist = []
 test = Input(moveslist, gameslist)
-sendDM("Wake upppp pleaseeee!",735128411874689024)
+#sendDM("Wake upppp pleaseeee!",735128411874689024)
 #test.update()
 while True:
 	test.update()
