@@ -21,7 +21,7 @@ import tweepy
 from time import sleep
 from random import *
 from Player import *
-from Game import *
+from game import *
 
 #Authorizing information to control account
 consumer_key = 	"Hw1ZVEq1fnCNg6Ru1DT0vteFn"
@@ -148,8 +148,8 @@ class MyStreamListener(tweepy.StreamListener):
 					new_game = True
 					otheruser = api.get_user(screen_name = textparts[2][1:]) #drop the @ sign (although it might not matter)
 					print otheruser.id
-				elif (len(textparts[1]) == 4): #find moves
-				 		m = Move(status.user.id,string)
+				elif (len(textparts[1]) == 4 or len(textparts[1]) == 2): #find moves
+				 		m = Move(status.user.id, textparts[1])
 
 		if new_game:
 			print("New game starting")
@@ -157,6 +157,8 @@ class MyStreamListener(tweepy.StreamListener):
 			p2 = Player(otheruser.id, False)
 
 			self.games.append(Game(p1, p2))
+
+			print(self.games[len(self.games) - 1].getBoard().legal_moves)
 
 			sendDM(str(self.games[len(self.games) - 1].getBoard()), p1.getName())
 			sendDM(str(self.games[len(self.games) - 1].getBoard()), p2.getName())
@@ -167,6 +169,7 @@ class MyStreamListener(tweepy.StreamListener):
 		else:
 			print("Moving")
 			for g in range(len(self.games)):
+				print("Move: " + str(m.getMove()))
 				b = self.games[g].updateBoard(m.getMove())
 				if b == "Invalid move":
 					sendMessage(b, self.games[g].getPlayer(1, True).getName(), self.games[g].getPlayer(2, True).getName())
