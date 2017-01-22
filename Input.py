@@ -48,7 +48,7 @@ class Input:
 	def __init__ (self,moves,games):
 		self.moves = moves
 		self.games = games
-		#self.myStreamListener = MyStreamListener()
+		
 	#
 	# Objective: Scans twitter feeds for mentions of the twitterchess bot and records relevant actions
 	# Input: None
@@ -119,22 +119,16 @@ def sendMessage(s, ID1 = None, ID2 = None): #writes a status, mentioning 1, 2 or
 			print("Damn")
 			print(e.message)
 			pass
-
-def sendStat(s):
-	print("shits happening yo")
-	
-	text_file = open("Output.txt", "a")
-	text_file.write("%s\n" % s)
-	text_file.close()
-
-def getStat():
-	f = open("Output.txt", "w+")
-	stats = f.read().split("\n")
-	f.write("")
-	#print("BLESS: " + str(len(stats)))
-	f.close()
-
-	return stats
+#
+# Objective: Send a direct message to one of the bot's followers
+# Input: A string(the message) and the recipient's ID. It is assumed that the player is following the bot 
+# Output: The recipient is messaged hte desired message
+#
+def sendDM(s, ID):
+	new_followers = api.followers(thisBot) #must check to see if recipient is follower first
+	for i in new_followers:
+		if i.id == ID: #check if the recipient id matches one of the bot's followers
+			api.send_direct_message(ID, text = s)
 
 #override tweepy.StreamListener to add logic to on_status
 class MyStreamListener(tweepy.StreamListener):
@@ -146,19 +140,16 @@ class MyStreamListener(tweepy.StreamListener):
 		new_game = False
 		text = str(status.text)
 		textparts = str.split(text) #convert tweet into string array to disect
-		user = api.get_user(screen_name = textparts[0][1:])
+		user = status.user
+		print user.id
 		for x, string in enumerate(textparts): 
 			if (x < len(textparts)-1): #prevents error that arises with an incomplete call of the twitter bot to start a game
 				if string == "gamestart" and textparts[x+1][:1] == "@": #find games
 					new_game = True
 					otheruser = api.get_user(screen_name = textparts[2][1:]) #drop the @ sign (although it might not matter)
+					print otheruser.id
 				elif (len(textparts[1]) == 4): #find moves
 				 		m = Move(tweet.user.id,string)
-
-		# Update shit here. Including the parsing of status. No need for the moves and games lists cuz only one thing.
-		# Just get the person who said it and what it is (new game, move).
-		# If its a new game, make new_game True and put the names in
-		# if not, create a Move object called 'm' with the id and shit of the tweeter
 
 		if new_game:
 			print("New game starting")
@@ -207,14 +198,10 @@ class Move: #object contains the ID of the player and the move they are to make
 	def getMove(self):
 		return self.move
 
-#class MyStreamListener(tweepy.StreamListener):
-
- #   def on_status(self, status):
- #       print(status.text)
-
 moveslist = []
 gameslist = []
 test = Input(moveslist, gameslist)
+sendDM("Wake upppp pleaseeee!",735128411874689024)
 #test.update()
 while True:
 	test.update()
