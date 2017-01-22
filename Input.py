@@ -44,7 +44,7 @@ stat = ""
 # Input: A list to store moves in active games and a list to store games preparing to be made
 # Output: Can post statuses or supply other objects with the games and moves list it stores
 #
-Class Input
+class Input:
 	def __init__ (self,moves,games):
 		self.moves = moves
 		self.games = games
@@ -134,10 +134,23 @@ def getStat():
 
 #override tweepy.StreamListener to add logic to on_status
 class MyStreamListener(tweepy.StreamListener):
-	games = []
+	def __init__ (self):
+		self.games = []
+		self.api = api
 
 	def on_status(self, status):
 		new_game = False
+		text = str(status.text)
+		textparts = str.split(text) #convert tweet into string array to disect
+		user = api.get_user(screen_name = textparts[0][1:])
+		for x, string in enumerate(textparts): 
+			if (x < len(textparts)-1): #prevents error that arises with an incomplete call of the twitter bot to start a game
+				if string == "gamestart" and textparts[x+1][:1] == "@": #find games
+					new_game = True
+					otheruser = api.get_user(screen_name = textparts[2][1:]) #drop the @ sign (although it might not matter)
+				elif (len(textparts[1]) == 4): #find moves
+				 		m = Move(tweet.user.id,string)
+
 		# Update shit here. Including the parsing of status. No need for the moves and games lists cuz only one thing.
 		# Just get the person who said it and what it is (new game, move).
 		# If its a new game, make new_game True and put the names in
@@ -145,10 +158,10 @@ class MyStreamListener(tweepy.StreamListener):
 
 		if new_game:
 			p1_white = randint(1, 10)
-			p1 = Player('TODO: Put name here', p1_white % 2)
-			p2 = Player('TODO: put name here', not (p1_white % 2))
+			p1 = Player(user.id, p1_white % 2)
+			p2 = Player(otheruser.id, not (p1_white % 2))
 
-			games.append(Game(p1, p2))
+			self.games.append(Game(p1, p2))
 
 		else:
 			for g in range(len(games)):
