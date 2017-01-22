@@ -19,6 +19,9 @@
 
 import tweepy
 from time import sleep
+from random import *
+from Player import *
+from Game import *
 
 #Authorizing information to control account
 consumer_key = 	"Hw1ZVEq1fnCNg6Ru1DT0vteFn"
@@ -41,7 +44,7 @@ stat = ""
 # Input: A list to store moves in active games and a list to store games preparing to be made
 # Output: Can post statuses or supply other objects with the games and moves list it stores
 #
-class Input:
+Class Input
 	def __init__ (self,moves,games):
 		self.moves = moves
 		self.games = games
@@ -52,11 +55,9 @@ class Input:
 	# Output: Stores new games and planned moves 
 	#
 	def update(self):
-		print("Dicks This")
 		myStreamListener = MyStreamListener()
 		myStream = tweepy.Stream(auth = api.auth, listener = myStreamListener)
 		myStream.filter(track = ["@realtwitchess"])
-		print("Dicks")
 
 		#print api.rate_limit_status()
 		# for tweet in tweepy.Cursor(api.search, q = '@realtwitchess ', count = 200, result_type = "recent",lang = ' ').pages():
@@ -91,29 +92,29 @@ class Input:
 	def getGames(self): #returns the list of games waiting to be made
 		return self.games
 
-	#
-	# Objective: Scans twitter feeds for mentions of the twitterchess bot and records relevant actions
-	# Input: None
-	# Output: Stores new games and planned moves 
-	#
-	def sendMessage(self,s,ID1 = None, ID2 = None): #writes a status, mentioning 1, 2 or no other users
-		if not ID1 and not ID2: #No person to be mentioned
-			api.update_status(s)
+#
+# Objective: Scans twitter feeds for mentions of the twitterchess bot and records relevant actions
+# Input: None
+# Output: Stores new games and planned moves 
+#
+def sendMessage(s,ID1 = None, ID2 = None): #writes a status, mentioning 1, 2 or no other users
+	if not ID1 and not ID2: #No person to be mentioned
+		api.update_status(s)
 
-		elif ID1 and not ID2: #Only one person is mentioned
-			user = api.get_user(ID1)   
-			try:
-				api.update_status("@" + user.screen_name + " " + s)
-			except tweepy.TweepError as e:
-				pass
+	elif ID1 and not ID2: #Only one person is mentioned
+		user = api.get_user(ID1)   
+		try:
+			api.update_status("@" + user.screen_name + " " + s)
+		except tweepy.TweepError as e:
+			pass
 
-		elif ID1 and ID2: #Two people are mentioned
-			user = api.get_user(ID1)  
-			user2 = api.get_user(ID2)
-			try:
-				api.update_status("@" + user.screen_name + " @" + user2.screen_name + " " + s)
-			except tweepy.TweepError as e:
-				pass
+	elif ID1 and ID2: #Two people are mentioned
+		user = api.get_user(ID1)  
+		user2 = api.get_user(ID2)
+		try:
+			api.update_status("@" + user.screen_name + " @" + user2.screen_name + " " + s)
+		except tweepy.TweepError as e:
+			pass
 
 def sendStat(s):
 	print("shits happening yo")
@@ -126,21 +127,49 @@ def getStat():
 	f = open("Output.txt", "w+")
 	stats = f.read().split("\n")
 	f.write("")
-	print("BLESS: " + str(len(stats)))
+	#print("BLESS: " + str(len(stats)))
 	f.close()
 
 	return stats
 
 #override tweepy.StreamListener to add logic to on_status
 class MyStreamListener(tweepy.StreamListener):
+	games = []
 
-    def on_status(self, status):
-    	sendStat(status.text)
+	def on_status(self, status):
+		new_game = False
+		# Update shit here. Including the parsing of status. No need for the moves and games lists cuz only one thing.
+		# Just get the person who said it and what it is (new game, move).
+		# If its a new game, make new_game True and put the names in
+		# if not, create a Move object called 'm' with the id and shit of the tweeter
 
-    def on_error(self, status_code):
-    	if status_code == 420:
-         	#returning False in on_error disconnects the stream
-        	return False
+		if new_game:
+			p1_white = randint(1, 10)
+			p1 = Player('TODO: Put name here', p1_white % 2)
+			p2 = Player('TODO: put name here', not (p1_white % 2))
+
+			games.append(Game(p1, p2))
+
+		else:
+			for g in range(len(games)):
+				p = games[g].getPlayer(m.getID())
+				if p != -1:  # Check if either player is one of the tweeters
+					if p.isTurn():
+						b = games[g].updateBoard(m.getMove())  # update found game with new move
+						if b == "Invalid move":
+							sendMessage(b, p)
+						else:
+							sendMessage(b, games[g].getPlayer(1, True), games[g].getPlayer(2, True))
+					else:
+						sendMessage(b, p)
+					break
+
+		print(status.text)
+
+	def on_error(self, status_code):
+		if status_code == 420:
+			#returning False in on_error disconnects the stream
+			return False
         # returning non-False reconnects the stream, with backoff.
 
 class Move: #object contains the ID of the player and the move they are to make
@@ -165,7 +194,3 @@ test = Input(moveslist, gameslist)
 #test.update()
 while True:
 	test.update()
-	print("Dicks")
-	x = getStat()
-	for i in x:
-		print(i)
