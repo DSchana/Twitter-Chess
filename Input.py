@@ -168,6 +168,7 @@ class MyStreamListener(tweepy.StreamListener):
 
 		else:
 			print("Moving")
+			'''
 			for g in range(len(self.games)):
 				print("Move: " + str(m.getMove()))
 				b = self.games[g].updateBoard(m.getMove())
@@ -178,18 +179,15 @@ class MyStreamListener(tweepy.StreamListener):
 					sendDM(b, self.games[g].getPlayer(2, True).getName())
 			'''
 			for g in range(len(self.games)):
-				p = self.games[g].getPlayer(m.getID())
+				p = self.games[g].getPlayer(m.getID(), False)
 				if p != -1:  # Check if either player is one of the tweeters
-					if p.isTurn():
-						b = self.games[g].updateBoard(m.getMove())  # update found game with new move
-						if b == "Invalid move":
-							sendDM(b, p.getName())
-						else:
-							sendDM(b, self.games[g].getPlayer(1, True).getName())
-							sendDM(b, self.games[g].getPlayer(2, True).getName())
-					else:
+					b = self.games[g].updateBoard(m.getMove())  # update found game with new move
+					if b == "Invalid move":
 						sendDM(b, p.getName())
-			'''
+					else:
+						sendDM(b, self.games[g].getPlayer(1, True).getName())
+						sendDM(b, self.games[g].getPlayer(2, True).getName())
+			
 
 		new_game = False
 
